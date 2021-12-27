@@ -1104,6 +1104,7 @@ void join_lines_select_spaces(Context& context, NormalParams)
     if (selections.empty())
         return;
     context.selections_write_only() = std::move(selections);
+    context.selections().merge_consecutive();
     ScopedEdition edition(context);
     context.selections().replace({" "_str});
 }
@@ -1293,7 +1294,7 @@ void select_object(Context& context, NormalParams params)
             { alt('w'), select_word<WORD> },
             { 's', select_sentence },
             { 'p', select_paragraph },
-            { ' ', select_whitespaces },
+            { Key::Space, select_whitespaces },
             { 'i', select_indent },
             { 'n', select_number },
             { 'u', select_argument },
@@ -1399,7 +1400,7 @@ void select_object(Context& context, NormalParams params)
          {{alt('w')},    "WORD"},
          {{'s'},         "sentence"},
          {{'p'},         "paragraph"},
-         {{' '},         "whitespaces"},
+         {{Key::Space},  "whitespaces"},
          {{'i'},         "indent"},
          {{'u'},         "argument"},
          {{'n'},         "number"},
@@ -2278,8 +2279,8 @@ static constexpr HashMap<Key, NormalCmd, MemoryDomain::Undefined, KeymapBackend>
     { {'!'}, {"insert command output", insert_output<PasteMode::Insert>} },
     { {alt('!')}, {"append command output", insert_output<PasteMode::Append>} },
 
-    { {' '}, {"remove all selections except main", keep_selection} },
-    { {alt(' ')}, {"remove main selection", remove_selection} },
+    { {Key::Space}, {"remove all selections except main", keep_selection} },
+    { {alt(Key::Space)}, {"remove main selection", remove_selection} },
     { {';'}, {"reduce selections to their cursor", clear_selections} },
     { {alt(';')}, {"swap selections cursor and anchor", flip_selections} },
     { {alt(':')}, {"ensure selection cursor is after anchor", ensure_forward} },

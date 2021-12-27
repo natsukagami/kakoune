@@ -1003,7 +1003,7 @@ public:
         }
         else
         {
-            if (key == ' ' and
+            if (key == Key::Space and
                 not (m_completions.flags & Completions::Flags::Quoted) and // if token is quoted, this space does not end it
                 can_auto_insert_completion())
                 m_line_editor.insert_from(line.char_count_to(m_completions.start),
@@ -1443,8 +1443,9 @@ public:
         auto main_index = context().selections().main_index();
         return {AtomList{ { "insert", context().faces()["StatusLineMode"] },
                           { " ", context().faces()["StatusLine"] },
-                          { format( "{} sels ({})", num_sel, main_index + 1),
-                             context().faces()["StatusLineInfo"] } }};
+                          { num_sel == 1 ? format("{} sel", num_sel)
+                              : format("{} sels ({})", num_sel, main_index + 1),
+                            context().faces()["StatusLineInfo"] } }};
     }
 
     KeymapMode keymap_mode() const override { return KeymapMode::Insert; }
